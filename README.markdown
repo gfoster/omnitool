@@ -15,7 +15,7 @@ In the command file you have three stanzas with a mini-dsl.
 You can define an options stanza, which sets up command
 line options as appropriate.  These look like:
 
-###### Options
+### Options
 
 > option :s, :switch => true, :description => "a simple switch"
 >
@@ -31,7 +31,7 @@ block form if you want to do some special processing yourself
 for that particular option.  These options are passed
 to the constructor on the omnitool object when created.
 
-###### Setup block
+### Setup block
 
 You also have a setup stanza which inserts setup information into
 the constructor in case you need to initialize something.  It
@@ -42,7 +42,7 @@ looks like this:
 >     @blah = "la dee da"
 > end
 
-###### Commands
+### Commands
 
 Finally, you have the commands which are of the format:
 
@@ -50,7 +50,7 @@ Finally, you have the commands which are of the format:
 >     puts "in the foo method"
 > end
 
-###### Misc wrapup
+### Misc wrapup
 
 Check out the sample files for jira and ot_cmds.
 
