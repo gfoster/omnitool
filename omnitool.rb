@@ -72,10 +72,10 @@ class Tool
     # default commands - always have a help command
 
     command :help, "Print this list" do
-        cmd_list = self.protected_methods
+        cmd_list = self.protected_methods.sort
         puts "list of supported commands: "
-        help_output = cmd_list.collect do
-            |cmd| cmd + "\t\t" + (@@help_text.include?(cmd) ? @@help_text[cmd] : "")
+        help_output = cmd_list.collect do |cmd|
+            cmd + (@@help_text.include?(cmd) ? "\t\t" + @@help_text[cmd] : "")
         end
         puts help_output.join("\n")
     end
