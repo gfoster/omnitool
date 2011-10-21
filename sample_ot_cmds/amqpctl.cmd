@@ -87,8 +87,8 @@ end
 
 option :q, :queue, :description => "name of queue"
 option :P, :port, :description => "amqp listening port"
-option :u, :username
-option :p, :password
-option :H, :host
+option :u, :username, :description => "username"
+option :p, :password, :description => "password"
+option :H, :host, :description => "amqp hostname"
 
 

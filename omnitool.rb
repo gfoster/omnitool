@@ -38,7 +38,7 @@ class Tool
         if args.last.kind_of? Hash
             hints = args.last
         else
-            hints = {}
+            hints = { :description => "" }
         end
 
         if args[1].kind_of? Hash
