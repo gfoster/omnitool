@@ -1,33 +1,33 @@
-
-
 setup do
     require 'rubygems'
     require 'amqp'
+
+    @queue_name = @options[:queue]
+
+    host = @options[:host] || 'localhost'
+    port = @options[:port] || 5672
+    username = @options[:username] || 'guest'
+    password = @options[:password] || 'guest'
+
+    @server = "amqp://#{username}:#{password}@#{host}:#{port}"
 end
 
 
 # and here's our commands.  They will automagically show up in any help listings
 # as well
 command :count, "show the number of messages in a named queue" do
-    unless queue_name = @options[:queue]
+    if @queue_name.nil?
         raise "must specify a queue name"
     end
 
-    host = @options[:host] || 'localhost'
-    port = @options[:port] || 5672
-    username = @options[:username] || 'guest'
-    password = @options[:password] || 'guest'
-    server = "amqp://#{username}:#{password}@#{host}:#{port}"
-
-    AMQP.start(server) do |connection, open_ok|
+    AMQP.start(@server) do |connection, open_ok|
 
         AMQP::Channel.new(connection) do |channel|
-
             channel.on_error do |ch, channel_close|
                 raise "Channel-level exception: #{channel_close.reply_text}"
             end
 
-            queue = channel.queue(queue_name, :nowait => true, :durable => true)
+            queue = channel.queue(@queue_name, :nowait => true, :durable => true)
 
             queue.status do |messages, consumers|
                 puts "messages:  #{messages}"
@@ -40,27 +40,43 @@ command :count, "show the number of messages in a named queue" do
 end
 
 command :delete, "delete a named queue" do
-    unless queue_name = @options[:queue]
+    if @queue_name.nil?
         raise "must specify a queue name"
     end
 
-    host = @options[:host] || 'localhost'
-    port = @options[:port] || 5672
-    username = @options[:username] || 'guest'
-    password = @options[:password] || 'guest'
-    server = "amqp://#{username}:#{password}@#{host}:#{port}"
-
-    AMQP.start(server) do |connection, open_ok|
+    AMQP.start(@server) do |connection, open_ok|
         AMQP::Channel.new(connection) do |channel|
 
             channel.on_error do |ch, channel_close|
                 raise "Channel-level exception: #{channel_close.reply_text}"
             end
 
-            queue = channel.queue(queue_name, :nowait => true, :durable => true)
+            queue = channel.queue(@queue_name, :nowait => true, :durable => true)
 
             queue.delete
-            puts "deleted queue #{queue_name}"
+            puts "deleted queue #{@queue_name}"
+
+            connection.close { EventMachine.stop }
+        end
+    end
+end
+
+command :purge, "purge a named queue" do
+    if @queue_name.nil?
+        raise "must specify a queue name"
+    end
+
+    AMQP.start(@server) do |connection, open_ok|
+        AMQP::Channel.new(connection) do |channel|
+
+            channel.on_error do |ch, channel_close|
+                raise "Channel-level exception: #{channel_close.reply_text}"
+            end
+
+            queue = channel.queue(@queue_name, :nowait => true, :durable => true)
+
+            queue.purge
+            puts "purged queue #{@queue_name}"
 
             connection.close { EventMachine.stop }
         end
