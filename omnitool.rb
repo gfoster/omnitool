@@ -2,7 +2,6 @@
 
 require 'rubygems'
 require 'optparse'
-require 'ruby-debug'
 
 # Copyright(c) 2011, Gary D. Foster <gary.foster@gmail.com>
 # This code is released under the MIT license.
