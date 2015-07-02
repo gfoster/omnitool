@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'optparse'
+require 'byebug'
 
 # Copyright(c) 2011, Gary D. Foster <gary.foster@gmail.com>
 # This code is released under the MIT license.
@@ -71,7 +72,7 @@ class Tool
     # default commands - always have a help command
 
     command :help, "Print this list" do
-        cmd_list = self.protected_methods.sort
+        cmd_list = @@help_text.keys.sort
         puts "list of supported commands: "
         help_output = cmd_list.collect do |cmd|
             cmd + (@@help_text.include?(cmd) ? "\t\t" + @@help_text[cmd] : "")
@@ -135,12 +136,11 @@ def main()
     optparse.parse!
 
     command = ARGV[0] || "help"
-    subcommand = ARGV[1..-1]
 
     tool = Tool.new(options)
 
     if tool.respond_to?(command)
-        tool.send(command, subcommand)
+        tool.send(command)
     else
         puts "Unknown command: #{ARGV[0]}, try 'help'"
         exit 1
