@@ -83,11 +83,14 @@ class Tool
     # load our chameleon command file based upon our own name
 
     cmd_file = "#{ENV['HOME']}/.ot_cmds/" << File.basename($0) << ".cmd"
+    system_cmd_file = "/var/lib/omnitool/ot_cmds" << File.basename($0) << ".cmd"
 
     if FileTest.exists?(cmd_file)
         load cmd_file
+    elsif FileTest.exists?(system_cmd_file)
+        load system_cmd_file
     else
-        puts "Could not find a command file for myself in #{cmd_file}"
+        puts "Could not find a command file for myself in #{cmd_file} or #{system_cmd_file}"
         exit 1
     end
 end
@@ -96,7 +99,7 @@ def main()
     options = {}
 
     optparse = OptionParser.new do |opts|
-        opts.banner = "Usage foo [options] ..."
+        opts.banner = "Usage #{File.basename($0)} [options] ..."
 
         $extra_options.each do |short, long, block, hints|
             # name each option after the long name, falling back to the short name if not given
